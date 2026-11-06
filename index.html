@@ -29,7 +29,7 @@
 
 <header class="nav-wrap">
   <nav class="nav" aria-label="Main">
-    <a class="logo" href="#home"><img src="images/logo.png" alt=""><span>mark.dev</span></a>
+    <a class="logo" href="#home"><span>mark.dev</span></a>
     <div class="nav-right">
       <ul>
         <li><a href="#home">Home</a></li>
@@ -101,8 +101,8 @@
   <!-- ABOUT -->
   <section id="about" class="section">
     <div class="container about-grid">
-      <div class="about-photo"><img src="images/profile.jpg" alt="Marklenn Azuelo"></div>
-      <div class="about-body">
+      <div class="about-photo" data-reveal="left"><img src="images/profile.jpg" alt="Marklenn Azuelo"></div>
+      <div class="about-body" data-reveal="right">
         <h2 class="section-title">About me</h2>
         <p class="about-lead">I’m an Information Technology student who likes building apps that solve problems people around me actually have.</p>
         <p class="about-text">For our capstone, I served as group leader and lead developer of WeFind, working across the whole project, from the Flutter screens tenants and landlords use to the Firebase backend and the admin panel. I’m now looking for an OJT where I can learn how professional teams plan, build, and ship software, and where I can contribute from day one.</p>
@@ -119,12 +119,12 @@
   <!-- WORK -->
   <section id="portfolio" class="section">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head" data-reveal="up">
         <h2 class="section-title">My work</h2>
         <p>Projects I’ve built, trainings I’ve joined, and the tools I use.</p>
       </div>
 
-      <div class="tabs" role="tablist" aria-label="Portfolio">
+      <div class="tabs" data-reveal="up" role="tablist" aria-label="Portfolio">
         <span class="tab-pill" aria-hidden="true"></span>
         <button role="tab" id="tab-projects" aria-controls="panel-projects" aria-selected="true" data-tab="projects">Projects</button>
         <button role="tab" id="tab-certificates" aria-controls="panel-certificates" aria-selected="false" tabindex="-1" data-tab="certificates">Trainings</button>
@@ -133,64 +133,28 @@
 
       <!-- Projects -->
       <div class="panel" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects">
-        <article class="feature">
-          <div class="feature-body">
+        <div class="project-grid">
+          <article class="project" data-reveal="up">
             <p class="kicker">Capstone project, 2026</p>
             <h3>WeFind</h3>
-            <p class="feature-sub">A location-based boarding house finder for Cotabato City</p>
-            <p>Tenants find rooms on a map, message or call landlords, and reserve a room from their phone. Landlords manage listings and tenants in one place. I led the team and built the app, the backend, and the admin panel.</p>
-            <ul class="checks">
-              <li>Map search limited to Cotabato City</li>
-              <li>Chat with photos and in-app voice calls</li>
-              <li>Reservations with GCash payment proof</li>
-              <li>Admin panel for verifying landlords</li>
-            </ul>
-            <ul class="chips"><li>Flutter</li><li>Firebase</li><li>Google Maps</li><li>Agora RTC</li></ul>
+            <p>A boarding house finder for Cotabato City. Tenants find rooms on a map, chat or call landlords, and reserve from their phone.</p>
+            <ul class="chips"><li>Flutter</li><li>Firebase</li><li>Google Maps</li></ul>
             <button class="btn btn-dark details" data-project="wefind">View details</button>
-          </div>
-
-          <div class="phone" aria-hidden="true">
-            <div class="phone-screen">
-              <div class="map">
-                <span class="road r1"></span><span class="road r2"></span><span class="road r3"></span><span class="river"></span>
-                <span class="pin p1"></span><span class="pin p2"></span><span class="pin p3 active"></span><span class="pin p4"></span>
-                <span class="me"></span>
-              </div>
-              <div class="search">Search in Cotabato City</div>
-              <div class="sheet">
-                <span class="grab"></span>
-                <div class="listing">
-                  <span class="thumb"></span>
-                  <span class="lines"><b>Boarding house near downtown</b><i>2 rooms available</i></span>
-                </div>
-                <span class="reserve">Reserve</span>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="feature feature-small">
-          <div class="feature-body">
+          </article>
+          <article class="project" data-reveal="up">
             <p class="kicker">Personal project</p>
             <h3>PubliShare</h3>
-            <p>A website for publishing app releases and documents, organized into folders so testers and classmates can always download the latest version in one place.</p>
-            <ul class="chips"><li>Flutter web</li><li>Firebase Storage</li><li>Firebase Hosting</li></ul>
+            <p>A website for publishing app releases and documents in folders, so testers can always download the latest version.</p>
+            <ul class="chips"><li>Flutter web</li><li>Firebase</li></ul>
             <button class="btn btn-dark details" data-project="publishare">View details</button>
-          </div>
-          <div class="files" aria-hidden="true">
-            <div class="files-bar"><span></span><span></span><span></span></div>
-            <div class="file folder"><i></i>Releases</div>
-            <div class="file apk"><i></i>app-release.apk<em>Latest</em></div>
-            <div class="file pdf"><i></i>user-manual.pdf</div>
-            <div class="file folder"><i></i>Documents</div>
-          </div>
-        </article>
+          </article>
+        </div>
       </div>
 
       <!-- Trainings -->
       <div class="panel" id="panel-certificates" role="tabpanel" aria-labelledby="tab-certificates" hidden>
         <ol class="timeline">
-          <li class="tl-year">
+          <li class="tl-year" data-reveal="up">
             <span class="year-label">2026</span>
             <ul>
               <li><strong>Data Collection and Annotation</strong><span>TESDA</span></li>
@@ -198,7 +162,7 @@
               <li><strong>CODEFEST</strong><span>Coding event</span></li>
             </ul>
           </li>
-          <li class="tl-year">
+          <li class="tl-year" data-reveal="up">
             <span class="year-label">2024</span>
             <ul>
               <li><strong>Java Fundamentals</strong><span>Training</span></li>
@@ -210,19 +174,19 @@
       <!-- Tech stack -->
       <div class="panel" id="panel-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
         <div class="stack">
-          <div class="stack-group">
+          <div class="stack-group" data-reveal="up">
             <h3>Apps</h3>
             <ul class="chips"><li>Flutter</li><li>Dart</li><li>Flutter web</li><li>C# / ASP.NET Web Forms</li><li>Java</li></ul>
           </div>
-          <div class="stack-group">
+          <div class="stack-group" data-reveal="up">
             <h3>Backend</h3>
             <ul class="chips"><li>Cloud Firestore</li><li>Firebase Auth</li><li>Firebase Storage</li><li>Cloud Functions</li><li>Cloud Messaging</li><li>Firebase Hosting</li></ul>
           </div>
-          <div class="stack-group">
+          <div class="stack-group" data-reveal="up">
             <h3>APIs and integrations</h3>
             <ul class="chips"><li>Google Maps</li><li>Agora RTC</li><li>Android App Links</li></ul>
           </div>
-          <div class="stack-group">
+          <div class="stack-group" data-reveal="up">
             <h3>Tools</h3>
             <ul class="chips"><li>Git</li><li>GitHub</li><li>Visual Studio Code</li></ul>
           </div>
@@ -234,12 +198,12 @@
   <!-- CONTACT -->
   <section id="contact" class="section">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head" data-reveal="up">
         <h2 class="section-title">Contact</h2>
         <p>Have an OJT slot or a question? Send me a message.</p>
       </div>
       <div class="contact-grid">
-        <form class="panel-box contact-form" novalidate>
+        <form class="panel-box contact-form" data-reveal="left" novalidate>
           <h3>Send a message</h3>
           <p class="muted">Your email app will open with the message ready to send.</p>
           <label class="field"><span class="sr-only">Your name</span>
@@ -255,7 +219,7 @@
           <button class="btn btn-light full" type="submit"><svg viewBox="0 0 24 24"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg>Open email app</button>
         </form>
 
-        <div class="panel-box">
+        <div class="panel-box" data-reveal="right">
           <h3>Reach me directly</h3>
           <p class="muted">Email is the fastest way to reach me.</p>
           <div class="links">

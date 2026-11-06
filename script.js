@@ -231,6 +231,24 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
   Object.keys(byId).forEach(id => { const el = document.getElementById(id); if (el) spy.observe(el); });
 })();
 
+/* ---------- Scroll reveal ---------- */
+(function reveal() {
+  const items = [...document.querySelectorAll('[data-reveal]')];
+  if (reduceMotion || !('IntersectionObserver' in window)) { items.forEach(el => el.classList.add('shown')); return; }
+  // Items that sit side by side come in one after another
+  items.forEach(el => {
+    const sibs = [...el.parentElement.children].filter(c => c.hasAttribute('data-reveal'));
+    const i = sibs.indexOf(el);
+    if (i > 0) el.style.setProperty('--d', `${i * 120}ms`);
+  });
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('shown'); obs.unobserve(entry.target); }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  items.forEach(el => obs.observe(el));
+})();
+
 /* ---------- Tabs ---------- */
 const tabs = [...document.querySelectorAll('[role="tab"]')];
 const pill = document.querySelector('.tab-pill');
@@ -277,7 +295,7 @@ document.querySelector('.year').textContent = new Date().getFullYear();
 
 /* ---------- Dark mode / color mode toggle ---------- */
 (function themeToggle() {
-  const root = document.documentElement;D
+  const root = document.documentElement;
   const btn = document.querySelector('.theme-toggle');
   function sync() {
     const dark = root.getAttribute('data-theme') === 'dark';
