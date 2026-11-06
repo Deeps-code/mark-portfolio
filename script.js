@@ -1,0 +1,238 @@
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Welcome screen (shows once per visit) ---------- */
+(function intro() {
+  const el = document.querySelector('.intro');
+  let seen = false;
+  try { seen = sessionStorage.getItem('introSeen') === '1'; } catch (e) {}
+  if (reduceMotion || seen) { el.remove(); return; }
+  document.body.classList.add('intro-on');
+  const finish = () => {
+    el.classList.add('done');
+    document.body.classList.remove('intro-on');
+    try { sessionStorage.setItem('introSeen', '1'); } catch (e) {}
+    setTimeout(() => el.remove(), 800);
+  };
+  const timer = setTimeout(finish, 2600);
+  el.addEventListener('click', () => { clearTimeout(timer); finish(); });
+})();
+
+/* ---------- Typing effect ---------- */
+(function typing() {
+  const target = document.querySelector('.typed');
+  const words = ['BSIT student', 'Software developer', 'Capstone lead developer'];
+  if (reduceMotion) { target.textContent = words[0]; return; }
+  let w = 0, i = 0, deleting = false;
+  function tick() {
+    const word = words[w];
+    i += deleting ? -1 : 1;
+    target.textContent = word.slice(0, i);
+    let delay = deleting ? 45 : 90;
+    if (!deleting && i === word.length) { deleting = true; delay = 1600; }
+    else if (deleting && i === 0) { deleting = false; w = (w + 1) % words.length; delay = 350; }
+    setTimeout(tick, delay);
+  }
+  setTimeout(tick, 900);
+})();
+
+/* ---------- Hanging ID card: drag the card or the strap; the strap stretches ---------- */
+(function lanyard() {
+  const box = document.querySelector('.lanyard');
+  const swing = document.querySelector('.swing');
+  const strap = document.querySelector('.strap');
+  const card = document.querySelector('.card');
+  const BASE = strap.offsetHeight;          // normal strap length (px)
+  const MAX_STRETCH = 240;                  // how far it can be pulled
+
+  let angle = reduceMotion ? 0 : 12;        // swing angle in degrees
+  let angleVel = 0;
+  let len = BASE;                           // current strap length
+  let lenVel = 0;
+  let dragging = false;
+  let grabOffset = 0;                       // distance from strap end to the grab point
+  let last = performance.now();
+  let prev = { angle: 0, len: 0, t: 0 };
+
+  // Top of the strap (the fixed point everything hangs from)
+  function anchor() {
+    const r = box.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top };
+  }
+  function draw() {
+    const tilt = Math.max(-25, Math.min(25, angleVel * 0.4));
+    strap.style.height = len + 'px';
+    swing.style.transform = `rotate(${angle}deg)`;
+    card.style.transform = `rotateY(${tilt}deg)`;
+  }
+  function loop(now) {
+    const dt = Math.min(0.033, (now - last) / 1000);
+    last = now;
+    if (!dragging) {
+      // Pendulum swing
+      angleVel += (-20 * angle - 1.6 * angleVel) * dt;
+      angle += angleVel * dt;
+      // Elastic strap snaps back to its normal length
+      lenVel += (-140 * (len - BASE) - 9 * lenVel) * dt;
+      len += lenVel * dt;
+    }
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  function pointerInfo(e) {
+    const a = anchor();
+    const dx = e.clientX - a.x, dy = e.clientY - a.y;
+    return {
+      deg: -Math.atan2(dx, dy) * 180 / Math.PI,
+      dist: Math.hypot(dx, dy)
+    };
+  }
+
+  function start(e) {
+    e.preventDefault();
+    dragging = true;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    grabOffset = pointerInfo(e).dist - len;
+    prev = { angle, len, t: performance.now() };
+    box.classList.add('pulling');
+  }
+  function move(e) {
+    if (!dragging) return;
+    const p = pointerInfo(e);
+    angle = Math.max(-35, Math.min(35, p.deg));
+    // Pulling further than the strap's length stretches it, with resistance
+    const raw = p.dist - grabOffset;
+    if (raw > BASE) {
+      const extra = raw - BASE;
+      len = BASE + MAX_STRETCH * (1 - Math.exp(-extra / MAX_STRETCH));
+    } else {
+      len = Math.max(BASE * 0.85, raw);
+    }
+    const now = performance.now(), dt = Math.max(0.016, (now - prev.t) / 1000);
+    angleVel = (angle - prev.angle) / dt;
+    lenVel = (len - prev.len) / dt;
+    prev = { angle, len, t: now };
+    if (reduceMotion) draw();
+  }
+  function end() {
+    if (!dragging) return;
+    dragging = false;
+    box.classList.remove('pulling');
+    if (reduceMotion) { angle = 0; len = BASE; draw(); }
+  }
+
+  [card, strap].forEach(el => {
+    el.addEventListener('pointerdown', start);
+    el.addEventListener('pointermove', move);
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+  });
+
+  if (reduceMotion) draw(); else requestAnimationFrame(loop);
+})();
+
+/* ---------- Nav highlight and section reveal ---------- */
+(function scrolling() {
+  const links = [...document.querySelectorAll('.nav ul a')];
+  const byId = Object.fromEntries(links.map(a => [a.hash.slice(1), a]));
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && byId[entry.target.id]) {
+        links.forEach(a => a.classList.remove('active'));
+        byId[entry.target.id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  Object.keys(byId).forEach(id => { const el = document.getElementById(id); if (el) spy.observe(el); });
+
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('shown'); reveal.unobserve(entry.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => reveal.observe(el));
+})();
+
+/* ---------- Count-up numbers ---------- */
+(function counters() {
+  const nums = document.querySelectorAll('.num');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target, end = +el.dataset.count;
+      obs.unobserve(el);
+      if (reduceMotion) { el.textContent = end; return; }
+      const start = performance.now(), dur = 1000;
+      (function step(now) {
+        const p = Math.min(1, (now - start) / dur);
+        el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      })(start);
+    });
+  }, { threshold: 0.6 });
+  nums.forEach(n => obs.observe(n));
+})();
+
+/* ---------- Tabs ---------- */
+const tabs = [...document.querySelectorAll('[role="tab"]')];
+const pill = document.querySelector('.tab-pill');
+function selectTab(name, focus) {
+  tabs.forEach((t, i) => {
+    const on = t.dataset.tab === name;
+    t.setAttribute('aria-selected', on);
+    t.tabIndex = on ? 0 : -1;
+    document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    if (on) { pill.style.transform = `translateX(${i * 100}%)`; if (focus) t.focus(); }
+  });
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => selectTab(t.dataset.tab));
+  t.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+    selectTab(next.dataset.tab, true);
+  });
+});
+// Stat cards jump to the matching tab
+document.querySelectorAll('.stat').forEach(s => s.addEventListener('click', () => selectTab(s.dataset.tab)));
+
+/* ---------- Project details ---------- */
+document.querySelectorAll('.details').forEach(btn => {
+  btn.addEventListener('click', () => document.getElementById('modal-' + btn.dataset.project).showModal());
+});
+document.querySelectorAll('.modal').forEach(m => {
+  m.querySelector('.modal-close').addEventListener('click', () => m.close());
+  m.addEventListener('click', (e) => { if (e.target === m) m.close(); });  // click outside to close
+});
+
+/* ---------- Contact form: opens the visitor's email app ---------- */
+document.querySelector('.contact-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = e.target, error = f.querySelector('.form-error');
+  const name = f.name.value.trim(), subject = f.subject.value.trim(), message = f.message.value.trim();
+  if (!name || !subject || !message) { error.textContent = 'Fill in your name, a subject, and a message.'; return; }
+  error.textContent = '';
+  const body = `${message}\n\n${name}`;
+  window.location.href = `mailto:marklennazuelo123@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
+
+/* ---------- Footer year ---------- */
+document.querySelector('.year').textContent = new Date().getFullYear();
+
+/* ---------- Dark mode / color mode toggle ---------- */
+(function themeToggle() {
+  const root = document.documentElement;
+  const btn = document.querySelector('.theme-toggle');
+  function sync() {
+    const dark = root.getAttribute('data-theme') === 'dark';
+    btn.setAttribute('aria-pressed', dark);
+    btn.setAttribute('aria-label', dark ? 'Switch to color mode' : 'Switch to dark mode');
+  }
+  btn.addEventListener('click', () => {
+    const dark = root.getAttribute('data-theme') !== 'dark';
+    if (dark) root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
+    try { localStorage.setItem('theme', dark ? 'dark' : 'color'); } catch (e) {}
+    sync();
+  });
+  sync();
+})();

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Portfolio</title>
+<meta name="description" content="Portfolio of Marklenn Azuelo, BSIT student at STI College Cotabato and lead developer of WeFind, a location-based boarding house finder app.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📍</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="theme.js"></script>
+</head>
+<body>
+
+<!-- Welcome screen -->
+<div class="intro" aria-hidden="true">
+  <div class="intro-icons">
+    <span><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg></span>
+    <span><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span>
+    <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></span>
+  </div>
+  <p class="intro-title">Welcome to my<br>Portfolio Website</p>
+  <p class="intro-url">deeps-code.github.io</p>
+</div>
+
+<div class="bg-grid" aria-hidden="true"></div>
+
+<header class="nav-wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="logo" href="#home">mark.dev</a>
+    <div class="nav-right">
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Dark mode">
+        <span class="to-dark"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg><span class="txt">Dark</span></span>
+        <span class="to-color"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1.3"/><circle cx="12" cy="7.5" r="1.3"/><circle cx="15.5" cy="10" r="1.3"/><path d="M12 21a2.5 2.5 0 0 1 0-5h2a3 3 0 0 0 3-3"/></svg><span class="txt">Color</span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- HOME -->
+  <section id="home" class="hero">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <p class="mono available"><span class="live"></span>Open to OJT opportunities</p>
+        <h1><span class="h-white">Software</span><span class="h-grey">Developer</span></h1>
+        <p class="mono typing" aria-label="BSIT student, Flutter developer"><span class="typed"></span><span class="caret">_</span></p>
+        <p class="hero-desc">I build mobile and web apps with Flutter and Firebase, from the screens people tap to the backend that keeps them running.</p>
+        <ul class="tags"><li>Flutter</li><li>Dart</li><li>Firebase</li></ul>
+        <div class="mono hints">
+          <p>// explore my work below</p>
+          <p>// based in Cotabato City, Philippines</p>
+        </div>
+      </div>
+
+      <div class="lanyard" aria-label="ID card with my photo. You can drag it.">
+        <div class="swing">
+          <div class="strap"><span>MARK-DEV · MARK-DEV · MARK-DEV · MARK-DEV · MARK-DEV</span></div>
+          <div class="clip"></div>
+          <div class="card">
+            <div class="card-photo"><img src="images/profile.jpg" alt="Photo of Marklenn Azuelo" draggable="false"></div>
+            <div class="card-info">
+              <strong>Marklenn Azuelo</strong>
+              <span>BSIT · STI College Cotabato</span>
+            </div>
+          </div>
+        </div>
+        <p class="mono drag-hint">drag me</p>
+      </div>
+    </div>
+    <a class="mono scroll-cue" href="#about">scroll ↓</a>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section reveal">
+    <div class="container">
+      <div class="about-grid">
+        <div>
+          <p class="mono label">About me</p>
+          <h2 class="big-name">Marklenn<br>Azuelo</h2>
+          <p class="about-text">I’m an Information Technology student at STI College Cotabato who likes building apps that solve problems people around me actually have. For our capstone, I served as group leader and lead developer of WeFind, working across the whole project, from the Flutter screens tenants and landlords use to the Firebase backend and the admin panel.</p>
+          <p class="about-text">I’m now looking for an OJT where I can learn how professional teams plan, build, and ship software, and where I can contribute from day one.</p>
+          <blockquote>“Building apps that make everyday problems easier to solve.”</blockquote>
+          <div class="btn-row">
+            <a class="btn btn-light" href="files/Azuelo_Marklenn_BSIT_OJT_Resume.pdf" download>
+              <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download resume</a>
+            <a class="btn btn-dark" href="#portfolio">
+              <svg viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg>View projects</a>
+          </div>
+        </div>
+        <div class="about-photo"><img src="images/profile.jpg" alt="Marklenn Azuelo"></div>
+      </div>
+
+      <div class="stats">
+        <a class="stat" href="#portfolio" data-tab="projects">
+          <svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>
+          <span class="num" data-count="2">0</span>
+          <span class="mono">Projects</span>
+        </a>
+        <a class="stat" href="#portfolio" data-tab="certificates">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M9 13.5L8 21l4-2 4 2-1-7.5"/></svg>
+          <span class="num" data-count="4">0</span>
+          <span class="mono">Trainings and seminars</span>
+        </a>
+        <a class="stat" href="#portfolio" data-tab="stack">
+          <svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5"/></svg>
+          <span class="num" data-count="14">0</span>
+          <span class="mono">Technologies used</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio" class="section reveal">
+    <div class="container">
+      <div class="center-head">
+        <h2>Portfolio Showcase</h2>
+        <p>My projects, trainings, and the tools I work with.</p>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Portfolio">
+        <span class="tab-pill" aria-hidden="true"></span>
+        <button role="tab" id="tab-projects" aria-controls="panel-projects" aria-selected="true" data-tab="projects">Projects</button>
+        <button role="tab" id="tab-certificates" aria-controls="panel-certificates" aria-selected="false" tabindex="-1" data-tab="certificates">Trainings</button>
+        <button role="tab" id="tab-stack" aria-controls="panel-stack" aria-selected="false" tabindex="-1" data-tab="stack">Tech Stack</button>
+      </div>
+
+      <div class="panel" id="panel-projects" role="tabpanel" aria-labelledby="tab-projects">
+        <div class="project-grid">
+          <article class="project-card">
+            <div class="cover cover-wefind">
+              <span class="cover-title">WeFind</span>
+              <svg class="cover-pin" viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            </div>
+            <div class="project-body">
+              <h3>WeFind</h3>
+              <p>A location-based boarding house finder app for Cotabato City, with maps, chat, voice calls, and reservations. Capstone project, 2026.</p>
+              <div class="project-foot"><span class="mono">Flutter · Firebase</span><button class="details" data-project="wefind">Details →</button></div>
+            </div>
+          </article>
+          <article class="project-card">
+            <div class="cover cover-publi">
+              <span class="cover-title">PubliShare</span>
+              <svg class="cover-pin" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 10v6M9.5 13.5L12 16l2.5-2.5"/></svg>
+            </div>
+            <div class="project-body">
+              <h3>PubliShare</h3>
+              <p>A website for publishing app releases and documents, organized into folders so testers can always get the latest version.</p>
+              <div class="project-foot"><span class="mono">Flutter web · Firebase</span><button class="details" data-project="publishare">Details →</button></div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-certificates" role="tabpanel" aria-labelledby="tab-certificates" hidden>
+        <div class="cert-grid">
+          <div class="cert"><span class="mono yr">2026</span><h3>Data Notation and Collection</h3><p>TESDA</p></div>
+          <div class="cert"><span class="mono yr">2026</span><h3>Press Start: Game Development in Region 8</h3><p>DICT</p></div>
+          <div class="cert"><span class="mono yr">2026</span><h3>CODEFEST</h3><p>Coding event</p></div>
+          <div class="cert"><span class="mono yr">2024</span><h3>Java Fundamentals</h3><p>Training</p></div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-stack" role="tabpanel" aria-labelledby="tab-stack" hidden>
+        <div class="stack-grid">
+          <div class="tech"><b>Fl</b><span>Flutter</span></div>
+          <div class="tech"><b>Da</b><span>Dart</span></div>
+          <div class="tech"><b>Fs</b><span>Cloud Firestore</span></div>
+          <div class="tech"><b>Au</b><span>Firebase Auth</span></div>
+          <div class="tech"><b>St</b><span>Firebase Storage</span></div>
+          <div class="tech"><b>Cf</b><span>Cloud Functions</span></div>
+          <div class="tech"><b>Fm</b><span>Cloud Messaging</span></div>
+          <div class="tech"><b>Fh</b><span>Firebase Hosting</span></div>
+          <div class="tech"><b>Gm</b><span>Google Maps</span></div>
+          <div class="tech"><b>Ag</b><span>Agora RTC</span></div>
+          <div class="tech"><b>C#</b><span>C# / ASP.NET</span></div>
+          <div class="tech"><b>Jv</b><span>Java</span></div>
+          <div class="tech"><b>Gt</b><span>Git</span></div>
+          <div class="tech"><b>Gh</b><span>GitHub</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section reveal">
+    <div class="container">
+      <div class="center-head">
+        <h2>Contact</h2>
+        <p>Have an OJT slot or a question? Send me a message.</p>
+      </div>
+      <div class="contact-grid">
+        <form class="panel-box contact-form" novalidate>
+          <h3>Send a message</h3>
+          <p class="muted">Fill this in and your email app will open with the message ready to send.</p>
+          <label class="field"><span class="sr-only">Your name</span>
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+            <input name="name" type="text" placeholder="Your name" required></label>
+          <label class="field"><span class="sr-only">Subject</span>
+            <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
+            <input name="subject" type="text" placeholder="Subject" required></label>
+          <label class="field area"><span class="sr-only">Your message</span>
+            <svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg>
+            <textarea name="message" rows="5" placeholder="Your message" required></textarea></label>
+          <p class="form-error" role="alert"></p>
+          <button class="btn btn-light full" type="submit"><svg viewBox="0 0 24 24"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg>Send message</button>
+        </form>
+
+        <div class="panel-box">
+          <h3>Connect with me</h3>
+          <p class="muted">Email is the fastest way to reach me.</p>
+          <div class="links">
+            <a class="link-card wide" href="mailto:marklennazuelo123@gmail.com">
+              <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
+              <span><strong>Email</strong><em>marklennazuelo123@gmail.com</em></span></a>
+            <a class="link-card" href="https://github.com/Deeps-code" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24"><path d="M9 19c-4 1.3-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.7 11.7 0 0 0-6.2 0C6.6 2.8 5.6 3.1 5.6 3.1a4.3 4.3 0 0 0-.1 3.2A4.6 4.6 0 0 0 4.2 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
+              <span><strong>GitHub</strong><em>Deeps-code</em></span></a>
+            <a class="link-card" href="tel:+639067388276">
+              <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>
+              <span><strong>Phone</strong><em>0906 738 8276</em></span></a>
+            <a class="link-card wide" href="files/Azuelo_Marklenn_BSIT_OJT_Resume.pdf" download>
+              <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+              <span><strong>Resume</strong><em>Download PDF</em></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="mono">© <span class="year">2026</span> Marklenn Azuelo. Built with HTML, CSS, and JavaScript.</footer>
+
+<!-- Project details -->
+<dialog class="modal" id="modal-wefind" aria-labelledby="wefind-title">
+  <button class="modal-close" aria-label="Close">×</button>
+  <h2 id="wefind-title">WeFind</h2>
+  <p class="modal-sub">A Location-Based Boarding House Finder Mobile Application</p>
+  <p>Finding a boarding house usually means walking around, asking people, and calling landlords one by one. WeFind puts available rooms in Cotabato City on a map, so tenants can compare places, talk to landlords, and reserve a room from their phone, while landlords manage listings and tenants in one place.</p>
+  <div class="modal-meta">
+    <div><span class="mono">Role</span><strong>Group leader and lead developer</strong></div>
+    <div><span class="mono">Type</span><strong>Capstone project, 2026</strong></div>
+    <div><span class="mono">Platforms</span><strong>Android app and web admin panel</strong></div>
+  </div>
+  <h3>Key features</h3>
+  <ul class="feature-list">
+    <li><strong>Map-based search</strong> with Google Maps and a location picker limited to Cotabato City</li>
+    <li><strong>Tenant and landlord accounts</strong> with their own screens, listings, and saved places</li>
+    <li><strong>Chat and voice calls</strong> with photo sharing and an incoming-call screen</li>
+    <li><strong>Reservations</strong> with GCash payment proof, landlord confirmation, and contracts</li>
+    <li><strong>Reviews and ratings</strong> kept accurate with Firestore transactions</li>
+    <li><strong>Admin panel</strong> for landlord verification, reports, and approval emails</li>
+    <li><strong>Shareable links</strong> that open listings in the app with Android App Links</li>
+    <li><strong>In-app updates</strong> that prompt users when a new version is out</li>
+  </ul>
+  <h3>Technologies</h3>
+  <ul class="tags"><li>Flutter</li><li>Dart</li><li>Cloud Firestore</li><li>Firebase Auth</li><li>Cloud Functions</li><li>Cloud Messaging</li><li>Google Maps</li><li>Agora RTC</li></ul>
+</dialog>
+
+<dialog class="modal" id="modal-publishare" aria-labelledby="publi-title">
+  <button class="modal-close" aria-label="Close">×</button>
+  <h2 id="publi-title">PubliShare</h2>
+  <p class="modal-sub">APK and document publishing website</p>
+  <p>A website for publishing app releases and documents, organized into folders so testers and classmates can always download the latest version in one place.</p>
+  <div class="modal-meta">
+    <div><span class="mono">Type</span><strong>Personal project</strong></div>
+    <div><span class="mono">Platform</span><strong>Web</strong></div>
+  </div>
+  <h3>Technologies</h3>
+  <ul class="tags"><li>Flutter web</li><li>Firebase Storage</li><li>Firebase Hosting</li></ul>
+</dialog>
+
+<script src="script.js"></script>
+</body>
+</html>
