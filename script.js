@@ -277,7 +277,7 @@ document.querySelector('.year').textContent = new Date().getFullYear();
 
 /* ---------- Dark mode / color mode toggle ---------- */
 (function themeToggle() {
-  const root = document.documentElement;
+  const root = document.documentElement;D
   const btn = document.querySelector('.theme-toggle');
   function sync() {
     const dark = root.getAttribute('data-theme') === 'dark';
