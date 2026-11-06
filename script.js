@@ -216,7 +216,7 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
   if (reduceMotion) draw(); else requestAnimationFrame(loop);
 })();
 
-/* ---------- Nav highlight and section reveal ---------- */
+/* ---------- Nav highlight ---------- */
 (function scrolling() {
   const links = [...document.querySelectorAll('.nav ul a')];
   const byId = Object.fromEntries(links.map(a => [a.hash.slice(1), a]));
@@ -229,33 +229,6 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
     });
   }, { rootMargin: '-45% 0px -50% 0px' });
   Object.keys(byId).forEach(id => { const el = document.getElementById(id); if (el) spy.observe(el); });
-
-  const reveal = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) { entry.target.classList.add('shown'); reveal.unobserve(entry.target); }
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => reveal.observe(el));
-})();
-
-/* ---------- Count-up numbers ---------- */
-(function counters() {
-  const nums = document.querySelectorAll('.num');
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const el = entry.target, end = +el.dataset.count;
-      obs.unobserve(el);
-      if (reduceMotion) { el.textContent = end; return; }
-      const start = performance.now(), dur = 1000;
-      (function step(now) {
-        const p = Math.min(1, (now - start) / dur);
-        el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
-        if (p < 1) requestAnimationFrame(step);
-      })(start);
-    });
-  }, { threshold: 0.6 });
-  nums.forEach(n => obs.observe(n));
 })();
 
 /* ---------- Tabs ---------- */
@@ -278,8 +251,6 @@ tabs.forEach((t, i) => {
     selectTab(next.dataset.tab, true);
   });
 });
-// Stat cards jump to the matching tab
-document.querySelectorAll('.stat').forEach(s => s.addEventListener('click', () => selectTab(s.dataset.tab)));
 
 /* ---------- Project details ---------- */
 document.querySelectorAll('.details').forEach(btn => {
