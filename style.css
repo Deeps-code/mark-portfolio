@@ -93,7 +93,8 @@ body.intro-on{overflow:hidden}
 .hero{--hang:300px;--strap:600px}
 .lanyard{position:absolute;z-index:1;top:calc(var(--hang) * -1);right:max(40px,calc((100vw - 1160px) / 2 + 110px));
   width:260px;height:calc(var(--strap) + 400px);perspective:900px;pointer-events:none}
-.swing{position:absolute;left:50%;top:0;width:220px;margin-left:-110px;transform-origin:50% 0;will-change:transform;pointer-events:auto}
+/* z-index keeps the card in front of the "drag me" label, so the label never shows over the photo */
+.swing{position:absolute;z-index:1;left:50%;top:0;width:220px;margin-left:-110px;transform-origin:50% 0;will-change:transform;pointer-events:auto}
 .strap{width:30px;height:var(--strap);margin:0 auto;cursor:grab;touch-action:none;user-select:none;background:#141414;border:1px solid #2a2a2a;border-top:0;overflow:hidden;display:flex;justify-content:center}
 .strap span{writing-mode:vertical-rl;font:500 .62rem var(--mono);letter-spacing:.3em;color:#8a8a8a;white-space:nowrap;padding-top:calc(var(--hang) + 20px)}
 .clip{width:36px;height:26px;margin:-2px auto 0;border-radius:6px;background:linear-gradient(#cfcfcf,#7d7d7d);box-shadow:inset 0 -3px 0 rgba(0,0,0,.25);position:relative;z-index:1}
@@ -106,7 +107,7 @@ body.intro-on{overflow:hidden}
 .card-info{padding:10px 4px 0;line-height:1.3}
 .card-info strong{display:block;font:800 .82rem var(--display);color:#111;letter-spacing:.01em}
 .card-info span{font:400 .68rem var(--mono);color:#555}
-.drag-hint{position:absolute;left:0;right:0;top:calc(var(--strap) + 370px);text-align:center;font-size:.72rem;color:var(--dim);margin:0}
+.drag-hint{position:absolute;z-index:0;left:0;right:0;top:calc(var(--strap) + 370px);text-align:center;font-size:.72rem;color:var(--dim);margin:0}
 .hero-grid{grid-template-columns:1fr;max-width:1160px}
 .hero-text{max-width:620px}
 @media (max-width:900px){

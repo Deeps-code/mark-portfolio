@@ -35,14 +35,16 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
   setTimeout(tick, 900);
 })();
 
-/* ---------- Hanging ID card: drag the card or the strap; the strap stretches ---------- */
+/* ---------- Hanging ID card: drag it, or tilt your phone and it follows gravity ---------- */
 (function lanyard() {
   const box = document.querySelector('.lanyard');
   const swing = document.querySelector('.swing');
   const strap = document.querySelector('.strap');
   const card = document.querySelector('.card');
+  const hint = document.querySelector('.drag-hint');
   const BASE = strap.offsetHeight;          // normal strap length (px)
   const MAX_STRETCH = 240;                  // how far it can be pulled
+  const MAX_TILT = 60;                      // furthest the card will lean when the phone is tilted
 
   let angle = reduceMotion ? 0 : 12;        // swing angle in degrees
   let angleVel = 0;
@@ -52,6 +54,11 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
   let grabOffset = 0;                       // distance from strap end to the grab point
   let last = performance.now();
   let prev = { angle: 0, len: 0, t: 0 };
+
+  // Gravity from the phone's tilt sensor
+  let gravAngle = 0;                        // where "down" is, in degrees (0 = straight down the screen)
+  let gravPull = 1;                         // 0..1, weak when the phone is lying flat
+  let gyroOn = false;
 
   // Top of the strap (the fixed point everything hangs from)
   function anchor() {
@@ -68,8 +75,9 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
     const dt = Math.min(0.033, (now - last) / 1000);
     last = now;
     if (!dragging) {
-      // Pendulum swing
-      angleVel += (-20 * angle - 1.6 * angleVel) * dt;
+      // Pendulum swings toward wherever gravity points
+      const k = 20 * (gyroOn ? Math.max(0.2, gravPull) : 1);
+      angleVel += (-k * (angle - gravAngle) - 1.6 * angleVel) * dt;
       angle += angleVel * dt;
       // Elastic strap snaps back to its normal length
       lenVel += (-140 * (len - BASE) - 9 * lenVel) * dt;
@@ -127,6 +135,44 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
     el.addEventListener('pointerup', end);
     el.addEventListener('pointercancel', end);
   });
+
+  /* --- Tilt / gravity (phones and tablets) --- */
+  function onOrient(e) {
+    if (e.beta == null || e.gamma == null) return;
+    const b = e.beta * Math.PI / 180, g = e.gamma * Math.PI / 180;
+    // Direction of gravity across the screen, in portrait coordinates (x right, y down)
+    const sx = Math.cos(b) * Math.sin(g);
+    const sy = Math.sin(b);
+    // Turn it to match the current screen rotation (landscape support)
+    const screenAngle = (screen.orientation && screen.orientation.angle) ?? window.orientation ?? 0;
+    const r = -screenAngle * Math.PI / 180;
+    const x = sx * Math.cos(r) - sy * Math.sin(r);
+    const y = sx * Math.sin(r) + sy * Math.cos(r);
+    const target = Math.max(-MAX_TILT, Math.min(MAX_TILT, Math.atan2(-x, y) * 180 / Math.PI));
+    gravAngle += (target - gravAngle) * 0.25;   // smooth out sensor jitter
+    gravPull = Math.min(1, Math.hypot(x, y));
+    if (!gyroOn) { gyroOn = true; hint.textContent = 'tilt or drag me'; }
+  }
+  function startGyro() { window.addEventListener('deviceorientation', onOrient); }
+
+  const touchDevice = window.matchMedia('(pointer: coarse)').matches;
+  if (!reduceMotion && touchDevice && 'DeviceOrientationEvent' in window) {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // iPhone/iPad: motion access must be allowed from a tap
+      hint.textContent = 'tap to tilt · drag me';
+      const ask = () => {
+        card.removeEventListener('pointerup', ask);
+        strap.removeEventListener('pointerup', ask);
+        DeviceOrientationEvent.requestPermission()
+          .then(res => { if (res === 'granted') startGyro(); else hint.textContent = 'drag me'; })
+          .catch(() => { hint.textContent = 'drag me'; });
+      };
+      card.addEventListener('pointerup', ask);
+      strap.addEventListener('pointerup', ask);
+    } else {
+      startGyro();   // Android: works right away
+    }
+  }
 
   if (reduceMotion) draw(); else requestAnimationFrame(loop);
 })();
