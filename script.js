@@ -1,5 +1,90 @@
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* ---------- Interactive background: the grid lights up and ripples around the cursor ---------- */
+(function interactiveBackground() {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;   // mouse/trackpad only
+  const grid = document.querySelector('.bg-grid');
+  const cv = document.createElement('canvas');
+  cv.className = 'bg-canvas';
+  cv.setAttribute('aria-hidden', 'true');
+  grid.after(cv);
+  const ctx = cv.getContext('2d');
+
+  const GAP = 44;          // matches the background grid size in style.css
+  const RADIUS = 190;      // how far the effect reaches from the cursor
+  let w = 0, h = 0;
+  let target = { x: innerWidth / 2, y: innerHeight / 2 };
+  let pos = { ...target };
+  let on = 0, onTarget = 0;    // fades in when the cursor is on the page
+  let rgb = '45,212,191';
+  let running = false;
+
+  function readColor() {
+    const hex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim().replace('#', '');
+    if (hex.length === 6) rgb = [0, 2, 4].map(i => parseInt(hex.slice(i, i + 2), 16)).join(',');
+    kick();
+  }
+  function resize() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    w = innerWidth; h = innerHeight;
+    cv.width = w * dpr; cv.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    kick();
+  }
+  function kick() { if (!running) { running = true; requestAnimationFrame(frame); } }
+
+  function frame() {
+    pos.x += (target.x - pos.x) * 0.14;
+    pos.y += (target.y - pos.y) * 0.14;
+    on += (onTarget - on) * 0.08;
+    ctx.clearRect(0, 0, w, h);
+
+    if (on > 0.01) {
+      // Soft light under the cursor
+      const g = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, RADIUS * 1.8);
+      g.addColorStop(0, `rgba(${rgb},${0.09 * on})`);
+      g.addColorStop(1, `rgba(${rgb},0)`);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+
+      // Grid points near the cursor light up and get pushed outward
+      const x0 = Math.floor((pos.x - RADIUS) / GAP) * GAP, x1 = pos.x + RADIUS;
+      const y0 = Math.floor((pos.y - RADIUS) / GAP) * GAP, y1 = pos.y + RADIUS;
+      for (let x = x0; x <= x1; x += GAP) {
+        for (let y = y0; y <= y1; y += GAP) {
+          const dx = x - pos.x, dy = y - pos.y, d = Math.hypot(dx, dy);
+          const t = 1 - d / RADIUS;
+          if (t <= 0) continue;
+          const push = reduceMotion ? 0 : t * t * 16;
+          const px = x + (d ? dx / d : 0) * push, py = y + (d ? dy / d : 0) * push;
+          // little plus sign at each grid crossing
+          const s = 2 + t * 4;
+          ctx.strokeStyle = `rgba(${rgb},${t * 0.85 * on})`;
+          ctx.lineWidth = 1 + t;
+          ctx.beginPath();
+          ctx.moveTo(px - s, py); ctx.lineTo(px + s, py);
+          ctx.moveTo(px, py - s); ctx.lineTo(px, py + s);
+          ctx.stroke();
+        }
+      }
+    }
+
+    const settled = Math.abs(target.x - pos.x) < 0.3 && Math.abs(target.y - pos.y) < 0.3 && Math.abs(onTarget - on) < 0.01;
+    if (settled) { running = false; return; }
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('pointermove', (e) => { target.x = e.clientX; target.y = e.clientY; onTarget = 1; kick(); }, { passive: true });
+  document.addEventListener('mouseleave', () => { onTarget = 0; kick(); });
+  window.addEventListener('blur', () => { onTarget = 0; kick(); });
+  window.addEventListener('resize', resize);
+  // Re-read the color when the Dark / Color button is pressed
+  document.querySelector('.theme-toggle').addEventListener('click', () => setTimeout(readColor, 0));
+
+  resize();
+  readColor();
+})();
+
 /* ---------- Welcome screen (shows once per visit) ---------- */
 (function intro() {
   const el = document.querySelector('.intro');
@@ -248,6 +333,15 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
   }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
   items.forEach(el => obs.observe(el));
 })();
+
+/* ---------- Hover glow follows the cursor ---------- */
+document.querySelectorAll('.glow').forEach(el => {
+  el.addEventListener('pointermove', (e) => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+    el.style.setProperty('--my', `${e.clientY - r.top}px`);
+  });
+});
 
 /* ---------- Tabs ---------- */
 const tabs = [...document.querySelectorAll('[role="tab"]')];

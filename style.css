@@ -45,6 +45,9 @@ html:not([data-theme="dark"]) .bg-grid{background:
   linear-gradient(90deg,rgba(140,170,220,.05) 1px,transparent 1px) 0 0/44px 44px,
   var(--bg)}
 
+/* Cursor-reactive layer drawn on a canvas by script.js (sits above the grid, below the content) */
+.bg-canvas{position:fixed;inset:0;z-index:-1;width:100%;height:100%;pointer-events:none}
+
 /* ===== Welcome screen ===== */
 .intro{position:fixed;inset:0;z-index:100;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
   transition:opacity .7s ease,visibility .7s}
@@ -140,7 +143,8 @@ html:not([data-theme="dark"]) .card{box-shadow:0 30px 60px -20px rgba(0,0,0,.8),
   backface-visibility:hidden;-webkit-backface-visibility:hidden}
 html:not([data-theme="dark"]) .card-face{background:#fff}
 .card-photo{border-radius:10px;overflow:hidden;aspect-ratio:4/5;background:#222}
-.card-photo img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.card-photo{background:#000}
+.card-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;pointer-events:none}
 html[data-theme="dark"] .card-photo img{filter:grayscale(1) contrast(1.15)}
 .card-info{padding:10px 4px 0;line-height:1.3}
 .card-info strong{display:block;font:800 .82rem var(--display);color:#111}
@@ -215,7 +219,6 @@ html:not([data-theme="dark"]) .tab-pill{background:linear-gradient(120deg,rgba(4
 /* Projects */
 .project-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .project{display:flex;flex-direction:column;align-items:flex-start;padding:32px;border-radius:24px;background:var(--panel);border:1px solid var(--line);transition:border-color .25s}
-.project:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
 .kicker{margin:0 0 8px;font-size:.85rem;color:var(--accent)}
 .project h3{font:800 clamp(1.7rem,3vw,2.2rem)/1.05 var(--display);letter-spacing:-.02em}
 .project > p:not(.kicker){margin:12px 0 20px;max-width:46ch}
@@ -295,6 +298,32 @@ html:not([data-theme="dark"]) .modal h2{background:var(--grad);-webkit-backgroun
 
 /* Theme switch fades */
 body,.nav,.panel-box,.stack-group,.link-card,.field{transition:background-color .35s,border-color .35s,color .35s}
+
+/* ===== Hover glow on project cards and tech groups =====
+   A soft light follows the cursor, the border lights up near it, and the chips light up one by one */
+.glow{position:relative;isolation:isolate}
+.glow > *{position:relative;z-index:1}
+.glow::before,.glow::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s ease}
+/* light inside the card */
+.glow::before{z-index:0;background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--accent) 13%,transparent),transparent 65%)}
+/* bright border near the cursor */
+.glow::after{z-index:2;padding:1px;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),var(--accent),color-mix(in srgb,var(--accent-2) 60%,transparent) 40%,transparent 70%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.chips li{transition:border-color .3s,color .3s,background-color .3s,box-shadow .3s,transform .2s}
+@media (hover:hover){
+  .glow:hover::before,.glow:hover::after{opacity:1}
+  .glow:hover .chips li{border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--white);
+    background:color-mix(in srgb,var(--accent) 12%,var(--panel-2));box-shadow:0 0 14px -4px color-mix(in srgb,var(--accent) 70%,transparent)}
+  .glow:hover .chips li:nth-child(2){transition-delay:60ms}
+  .glow:hover .chips li:nth-child(3){transition-delay:120ms}
+  .glow:hover .chips li:nth-child(4){transition-delay:180ms}
+  .glow:hover .chips li:nth-child(5){transition-delay:240ms}
+  .glow:hover .chips li:nth-child(6){transition-delay:300ms}
+  .glow .chips li:hover{transform:translateY(-2px);background:color-mix(in srgb,var(--accent) 22%,var(--panel-2));transition-delay:0ms}
+  .glow:hover .details{border-color:var(--accent)}
+}
 
 /* ===== Scroll reveal: content slides in from the sides or bottom =====
    Only hidden when JavaScript is running (html.js), so nothing disappears if scripts fail */
