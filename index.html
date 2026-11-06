@@ -6,7 +6,11 @@
 <meta name="color-scheme" content="dark">
 <title>Portfolio</title>
 <meta name="description" content="Portfolio of Marklenn Azuelo, BSIT student at STI College Cotabato and lead developer of WeFind, a location-based boarding house finder app.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📍</text></svg>">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="favicon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#0B1020">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -65,11 +69,28 @@
         <div class="swing">
           <div class="strap"><span>MARK-DEV · MARK-DEV · MARK-DEV · MARK-DEV · MARK-DEV</span></div>
           <div class="clip"></div>
-          <div class="card">
-            <div class="card-photo"><img src="images/profile.jpg" alt="Photo of Marklenn Azuelo" draggable="false"></div>
-            <div class="card-info">
-              <strong>Marklenn Azuelo</strong>
-              <span>BSIT · STI College Cotabato</span>
+          <div class="card" tabindex="0" role="button" aria-label="ID card. Press to flip it over.">
+            <div class="card-face card-front">
+              <div class="card-photo"><img src="images/profile.jpg" alt="Photo of Marklenn Azuelo" draggable="false"></div>
+              <div class="card-info">
+                <strong>Marklenn Azuelo</strong>
+                <span>BSIT · STI College Cotabato</span>
+              </div>
+            </div>
+            <div class="card-face card-back" aria-hidden="true">
+              <span class="back-logo">mark.dev</span>
+              <div class="back-main">
+                <span class="back-mono">MA</span>
+                <strong>Marklenn Azuelo</strong>
+                <span class="back-role">Software Developer</span>
+              </div>
+              <ul class="back-list">
+                <li><em>Stack</em>Flutter · Firebase</li>
+                <li class="col"><em>Email</em>marklennazuelo123@gmail.com</li>
+                <li><em>GitHub</em>Deeps-code</li>
+              </ul>
+              <div class="back-code"></div>
+              <span class="back-hint">tap to flip back</span>
             </div>
           </div>
         </div>

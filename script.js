@@ -35,25 +35,35 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
   setTimeout(tick, 900);
 })();
 
-/* ---------- Hanging ID card: drag it, or tilt your phone and it follows gravity ---------- */
+/* ---------- Hanging ID card: drag it, tap to flip it, tilt your phone and it follows gravity ---------- */
 (function lanyard() {
   const box = document.querySelector('.lanyard');
   const swing = document.querySelector('.swing');
   const strap = document.querySelector('.strap');
   const card = document.querySelector('.card');
+  const front = document.querySelector('.card-front');
+  const back = document.querySelector('.card-back');
   const hint = document.querySelector('.drag-hint');
   const BASE = strap.offsetHeight;          // normal strap length (px)
   const MAX_STRETCH = 240;                  // how far it can be pulled
   const MAX_TILT = 60;                      // furthest the card will lean when the phone is tilted
+  const TAP_MOVE = 6;                       // px a press can move and still count as a tap
+  const TAP_TIME = 350;                     // ms a press can last and still count as a tap
 
   let angle = reduceMotion ? 0 : 12;        // swing angle in degrees
   let angleVel = 0;
   let len = BASE;                           // current strap length
   let lenVel = 0;
-  let dragging = false;
+  let pressed = false;                      // finger/mouse is down on the card or strap
+  let dragging = false;                     // moved far enough to count as a drag
+  let down = { x: 0, y: 0, t: 0, onCard: false };
   let grabOffset = 0;                       // distance from strap end to the grab point
   let last = performance.now();
   let prev = { angle: 0, len: 0, t: 0 };
+
+  // Flip
+  let flipped = false;
+  let flip = 0, flipVel = 0;                // current flip angle (0 = front, 180 = back)
 
   // Gravity from the phone's tilt sensor
   let gravAngle = 0;                        // where "down" is, in degrees (0 = straight down the screen)
@@ -69,7 +79,7 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
     const tilt = Math.max(-25, Math.min(25, angleVel * 0.4));
     strap.style.height = len + 'px';
     swing.style.transform = `rotate(${angle}deg)`;
-    card.style.transform = `rotateY(${tilt}deg)`;
+    card.style.transform = `rotateY(${flip + tilt}deg)`;
   }
   function loop(now) {
     const dt = Math.min(0.033, (now - last) / 1000);
@@ -83,8 +93,19 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
       lenVel += (-140 * (len - BASE) - 9 * lenVel) * dt;
       len += lenVel * dt;
     }
+    // Flip with a small bounce at the end
+    flipVel += (-110 * (flip - (flipped ? 180 : 0)) - 13 * flipVel) * dt;
+    flip += flipVel * dt;
     draw();
     requestAnimationFrame(loop);
+  }
+
+  function toggleFlip() {
+    flipped = !flipped;
+    front.setAttribute('aria-hidden', flipped);
+    back.setAttribute('aria-hidden', !flipped);
+    if (reduceMotion) { flip = flipped ? 180 : 0; draw(); }
+    else angleVel += flipped ? 25 : -25;     // a little swing from the tap
   }
 
   function pointerInfo(e) {
@@ -98,14 +119,21 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 
   function start(e) {
     e.preventDefault();
-    dragging = true;
+    pressed = true;
+    dragging = false;
     e.currentTarget.setPointerCapture(e.pointerId);
+    down = { x: e.clientX, y: e.clientY, t: performance.now(), onCard: e.currentTarget === card };
     grabOffset = pointerInfo(e).dist - len;
     prev = { angle, len, t: performance.now() };
-    box.classList.add('pulling');
   }
   function move(e) {
-    if (!dragging) return;
+    if (!pressed) return;
+    if (!dragging) {
+      // Only start dragging once the pointer has really moved, so taps stay taps
+      if (Math.hypot(e.clientX - down.x, e.clientY - down.y) < TAP_MOVE) return;
+      dragging = true;
+      box.classList.add('pulling');
+    }
     const p = pointerInfo(e);
     angle = Math.max(-35, Math.min(35, p.deg));
     // Pulling further than the strap's length stretches it, with resistance
@@ -122,8 +150,14 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
     prev = { angle, len, t: now };
     if (reduceMotion) draw();
   }
-  function end() {
-    if (!dragging) return;
+  function end(e) {
+    if (!pressed) return;
+    pressed = false;
+    if (!dragging) {
+      // A quick press on the card without moving = flip it
+      if (e.type === 'pointerup' && down.onCard && performance.now() - down.t < TAP_TIME) toggleFlip();
+      return;
+    }
     dragging = false;
     box.classList.remove('pulling');
     if (reduceMotion) { angle = 0; len = BASE; draw(); }
@@ -135,8 +169,15 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
     el.addEventListener('pointerup', end);
     el.addEventListener('pointercancel', end);
   });
+  // Keyboard: Enter or Space flips the card
+  card.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFlip(); }
+  });
 
   /* --- Tilt / gravity (phones and tablets) --- */
+  const touchDevice = window.matchMedia('(pointer: coarse)').matches;
+  hint.textContent = touchDevice ? 'tap to flip · drag me' : 'click to flip · drag me';
+
   function onOrient(e) {
     if (e.beta == null || e.gamma == null) return;
     const b = e.beta * Math.PI / 180, g = e.gamma * Math.PI / 180;
@@ -151,21 +192,19 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
     const target = Math.max(-MAX_TILT, Math.min(MAX_TILT, Math.atan2(-x, y) * 180 / Math.PI));
     gravAngle += (target - gravAngle) * 0.25;   // smooth out sensor jitter
     gravPull = Math.min(1, Math.hypot(x, y));
-    if (!gyroOn) { gyroOn = true; hint.textContent = 'tilt or drag me'; }
+    if (!gyroOn) { gyroOn = true; hint.textContent = 'tap to flip · tilt or drag'; }
   }
   function startGyro() { window.addEventListener('deviceorientation', onOrient); }
 
-  const touchDevice = window.matchMedia('(pointer: coarse)').matches;
   if (!reduceMotion && touchDevice && 'DeviceOrientationEvent' in window) {
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-      // iPhone/iPad: motion access must be allowed from a tap
-      hint.textContent = 'tap to tilt · drag me';
+      // iPhone/iPad: motion access must be allowed from a tap (the first tap on the card asks)
       const ask = () => {
         card.removeEventListener('pointerup', ask);
         strap.removeEventListener('pointerup', ask);
         DeviceOrientationEvent.requestPermission()
-          .then(res => { if (res === 'granted') startGyro(); else hint.textContent = 'drag me'; })
-          .catch(() => { hint.textContent = 'drag me'; });
+          .then(res => { if (res === 'granted') startGyro(); })
+          .catch(() => {});
       };
       card.addEventListener('pointerup', ask);
       strap.addEventListener('pointerup', ask);
